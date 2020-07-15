@@ -5,4 +5,5 @@ package com.mall.huitop.service;
  * @date 2020-07-15 12:20
  */
 public interface UmsRoleService {
+    Object getMenuList(Long adminId);
 }
