@@ -1,5 +1,6 @@
 package com.mall.huitop.mapper;
 
+import com.mall.huitop.entity.UmsAdminExample;
 import com.mall.huitop.entity.UserAdmin;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -27,4 +28,15 @@ public interface UserAdminMapper {
             "      #{createTime,jdbcType=TIMESTAMP}, #{loginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}\n" +
             "      )")
     void insert(UserAdmin userAdmin);
+
+
+    @Select("select * from ums_admin where id =#{id}")
+    UserAdmin selectById(@Param("id") Long id);
+
+
+    List<UserAdmin> selectByExample(UmsAdminExample example);
+
+    UserAdmin selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(UserAdmin admin);
 }

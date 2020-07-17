@@ -1,7 +1,11 @@
 package com.mall.huitop.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.github.pagehelper.PageHelper;
 import com.mall.huitop.bo.AdminUserDetails;
+import com.mall.huitop.cache.UserAdminCacheService;
 import com.mall.huitop.dto.UserAdminDto;
+import com.mall.huitop.entity.UmsAdminExample;
 import com.mall.huitop.entity.UmsAdminLoginLog;
 import com.mall.huitop.entity.UserAdmin;
 import com.mall.huitop.entity.UserResource;
@@ -10,7 +14,6 @@ import com.mall.huitop.mapper.UserAdminMapper;
 import com.mall.huitop.mapper.UserAdminRoleRelationMapper;
 import com.mall.huitop.security.utils.JwtTokenUtil;
 import com.mall.huitop.service.UmsAdminService;
-import com.mall.huitop.service.UserAdminCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -131,6 +135,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
             if (resourceList != null){
                 userAdminCacheService.setResourceList(id,resourceList);
             }
+            return resourceList;
         }
         return resourceList;
     }
@@ -149,7 +154,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         loginLog.setIp(request.getRemoteAddr());
         loginLogMapper.insert(loginLog);
     }
-
+    @Override
     public UserAdmin getAdminByUsername(String username) {
         UserAdmin admin = userAdminCacheService.getAdmin(username);
         if(admin!=null) return  admin;
@@ -160,5 +165,47 @@ public class UmsAdminServiceImpl implements UmsAdminService {
             return admin;
         }
         return null;
+    }
+
+    @Override
+    public UserAdmin getItem(Long id) {
+        return userAdminMapper.selectById(id);
+    }
+
+    @Override
+    public String refreshToken(String token) {
+        return jwtTokenUtil.refreshHeadToken(token);
+    }
+
+    @Override
+    public List<UserAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        UmsAdminExample example = new UmsAdminExample();
+        UmsAdminExample.Criteria criteria = example.createCriteria();
+        if (!StringUtils.isEmpty(keyword)) {
+            criteria.andUsernameLike("%" + keyword + "%");
+            example.or(example.createCriteria().andNickNameLike("%" + keyword + "%"));
+        }
+        return userAdminMapper.selectByExample(example);
+    }
+
+    @Override
+    public int update(Long id, UserAdmin admin) {
+        admin.setId(id);
+        UserAdmin userAdmin = userAdminMapper.selectByPrimaryKey(id);
+        //因为涉及到密码加密,密码相同不需要改密码，密码不同需要加密修改
+        if (userAdmin.getPassword().equals(admin.getPassword())){
+            admin.setPassword(null);
+        }else {
+            //判断传过来的密码是不是空
+            if(StrUtil.isEmpty(admin.getPassword())){
+                admin.setPassword(null);
+            }else{
+                admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+            }
+        }
+        int count=userAdminMapper.updateByPrimaryKeySelective(admin);
+        userAdminCacheService.delAdmin(id);
+        return count;
     }
 }

@@ -1,26 +1,24 @@
 package com.mall.huitop.controller;
 
+import com.mall.huitop.common.api.CommonPage;
 import com.mall.huitop.common.api.CommonResult;
 import com.mall.huitop.dto.UserAdminDto;
 import com.mall.huitop.entity.UserAdmin;
+import com.mall.huitop.security.utils.JwtTokenUtil;
 import com.mall.huitop.service.UmsAdminService;
 import com.mall.huitop.service.UmsRoleService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,7 +28,6 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("admin")
-@RefreshScope
 public class UserAdminConroller {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -40,6 +37,9 @@ public class UserAdminConroller {
     private UmsAdminService adminService;
     @Autowired
     private UmsRoleService roleService;
+    @Autowired
+    private JwtTokenUtil tokenUtil;
+
     @ApiOperation(value = "用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
@@ -67,6 +67,20 @@ public class UserAdminConroller {
         tokenMap.put("tokenHead", tokenHead);
         return CommonResult.success(tokenMap);
     }
+    @ApiOperation(value = "刷新token")
+    @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult refreshToken(HttpServletRequest request) {
+        String token = request.getHeader(tokenHeader);
+        String refreshToken = adminService.refreshToken(token);
+        if (refreshToken == null) {
+            return CommonResult.failed("token已经过期！");
+        }
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("token", refreshToken);
+        tokenMap.put("tokenHead", tokenHead);
+        return CommonResult.success(tokenMap);
+    }
     @ApiOperation(value = "获取当前登录用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
@@ -74,8 +88,7 @@ public class UserAdminConroller {
         if (principal == null){
             return CommonResult.unauthorized(null);
         }
-        String username = principal.getName();
-        UserAdmin userAdmin = adminService.getAdminByUsername(username);
+        UserAdmin userAdmin = adminService.getAdminByUsername(principal.getName());
         Map<String, Object> data = new HashMap<>();
         data.put("username", userAdmin.getUsername());
         data.put("roles", new String[]{"TEST"});
@@ -83,5 +96,46 @@ public class UserAdminConroller {
         data.put("icon", userAdmin.getIcon());
         return CommonResult.success(data);
     }
+    @ApiOperation(value = "登出功能")
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult logout() {
+        return CommonResult.success(null);
+    }
 
+    @ApiOperation("获取指定用户信息")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<UserAdmin> getItem(@PathVariable Long id){
+        UserAdmin admin = adminService.getItem(id);
+        return CommonResult.success(admin);
+    }
+    @ApiOperation("根据用户名或姓名分页获取用户列表")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<CommonPage<UserAdmin>> list(@RequestParam(value = "keyword", required = false) String keyword,
+                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        List<UserAdmin> adminList = adminService.list(keyword, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(adminList));
+    }
+
+//    @ApiOperation("获取指定用户的角色")
+//    @RequestMapping(value = "/role/{adminId}", method = RequestMethod.GET)
+//    @ResponseBody
+//    public CommonResult<List<UserRole>> getRoleList(@PathVariable Long adminId) {
+//        List<UmsRole> roleList = adminService.getRoleList(adminId);
+//        return CommonResult.success(roleList);
+//    }
+    @ApiOperation("修改指定用户信息")
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult update(@PathVariable Long id, @RequestBody UserAdmin admin) {
+        int count=adminService.update(id,admin);
+        if (count > 0){
+            return CommonResult.success(count);
+        }
+        return  CommonResult.failed();
+
+    }
 }
