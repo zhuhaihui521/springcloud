@@ -5,10 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.mall.huitop.bo.AdminUserDetails;
 import com.mall.huitop.cache.UserAdminCacheService;
 import com.mall.huitop.dto.UserAdminDto;
-import com.mall.huitop.entity.UmsAdminExample;
-import com.mall.huitop.entity.UmsAdminLoginLog;
-import com.mall.huitop.entity.UserAdmin;
-import com.mall.huitop.entity.UserResource;
+import com.mall.huitop.entity.*;
 import com.mall.huitop.mapper.UmsAdminLoginLogMapper;
 import com.mall.huitop.mapper.UserAdminMapper;
 import com.mall.huitop.mapper.UserAdminRoleRelationMapper;
@@ -26,11 +23,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
                 //查询数据库
                 List<UserAdmin> userAdmins = userAdminMapper.selectByUserName(username);
                 if (userAdmins == null){
-                    throw new UsernameNotFoundException("用户名或密码错误");
+                    throw new UsernameNotFoundException("Invalid username or password!");
                 }
                 admin = userAdmins.get(0);
                 userAdminCacheService.setAdmin(admin);
@@ -143,7 +142,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
      * 添加登录记录
      * @param username 用户名
      */
-    private void insertLoginLog(String username) {
+    @Transactional
+    public void insertLoginLog(String username) {
         UserAdmin admin = getAdminByUsername(username);
         if(admin == null) return;
         UmsAdminLoginLog loginLog = new UmsAdminLoginLog();
@@ -190,6 +190,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
+    @Transactional
     public int update(Long id, UserAdmin admin) {
         admin.setId(id);
         UserAdmin userAdmin = userAdminMapper.selectByPrimaryKey(id);
@@ -208,4 +209,41 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         userAdminCacheService.delAdmin(id);
         return count;
     }
+
+    @Override
+    public List<UmsRole> getRoleList(Long adminId) {
+        List<UmsRole> roleList = userAdminCacheService.getRoleList(adminId);
+        if (roleList == null){
+            roleList = userAdminRoleRelationMapper.getRoleList(adminId);
+            if (roleList != null){
+                userAdminCacheService.setRoleList(adminId,roleList);
+            }
+            return roleList;
+        }
+        return roleList;
+    }
+
+    @Override
+    @Transactional
+    public int updateRole(Long adminId, List<Long> roleIds) {
+        //更新数据库后直接删除
+        int count = roleIds == null ? 0 : roleIds.size();
+       //先删除原来的关系
+        userAdminRoleRelationMapper.deleteByAdminId(adminId);
+        //建立新关系
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            List<UmsAdminRoleRelation> list = new ArrayList<>();
+            for (Long roleId : roleIds) {
+                UmsAdminRoleRelation roleRelation = new UmsAdminRoleRelation();
+                roleRelation.setAdminId(adminId);
+                roleRelation.setRoleId(roleId);
+                list.add(roleRelation);
+            }
+            userAdminRoleRelationMapper.insertList(list);
+        }
+         userAdminCacheService.delResourceList(adminId);
+         userAdminCacheService.delRoleList(adminId);
+         return count;
+    }
+
 }

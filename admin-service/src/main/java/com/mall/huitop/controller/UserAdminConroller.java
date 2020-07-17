@@ -3,6 +3,7 @@ package com.mall.huitop.controller;
 import com.mall.huitop.common.api.CommonPage;
 import com.mall.huitop.common.api.CommonResult;
 import com.mall.huitop.dto.UserAdminDto;
+import com.mall.huitop.entity.UmsRole;
 import com.mall.huitop.entity.UserAdmin;
 import com.mall.huitop.security.utils.JwtTokenUtil;
 import com.mall.huitop.service.UmsAdminService;
@@ -20,6 +21,10 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.mall.huitop.common.api.ResultCode.ACCOUNTLOCKED;
+import static com.mall.huitop.common.api.ResultCode.NOUSERADMIN;
+import static com.mall.huitop.common.api.StatusType.ENABLE;
 
 
 /**
@@ -60,6 +65,13 @@ public class UserAdminConroller {
     public CommonResult login(@RequestBody @Valid UserAdminDto userAdminDto, BindingResult result) {
         if (result.hasErrors()){
             return CommonResult.failed(result.getFieldError().getDefaultMessage());
+        }
+        UserAdmin adminByUsername = adminService.getAdminByUsername(userAdminDto.getUsername());
+        if (adminByUsername == null){
+            return CommonResult.failed(NOUSERADMIN,NOUSERADMIN.getMessage());
+        }
+        if (adminByUsername.getStatus() == ENABLE.getCode()){
+            return CommonResult.failed(ACCOUNTLOCKED,ACCOUNTLOCKED.getMessage());
         }
         String token = adminService.login(userAdminDto.getUsername(), userAdminDto.getPassword());
         Map<String, String> tokenMap = new HashMap<>();
@@ -136,6 +148,36 @@ public class UserAdminConroller {
             return CommonResult.success(count);
         }
         return  CommonResult.failed();
+    }
+    @ApiOperation("修改帐号状态")
+    @RequestMapping(value = "/updateStatus/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult updateStatus(@PathVariable Long id,@RequestParam(value = "status") Integer status) {
+        UserAdmin umsAdmin = new UserAdmin();
+        umsAdmin.setStatus(status);
+        int count = adminService.update(id,umsAdmin);
+        if (count > 0){
+            return CommonResult.success(count);
+        }
+        return  CommonResult.failed();
+    }
 
+    @ApiOperation("分配角色")
+    @RequestMapping(value = "/role/{adminId}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<UmsRole>> getRoleList(@PathVariable Long adminId){
+        List<UmsRole> roleList = adminService.getRoleList(adminId);
+        return CommonResult.success(roleList);
+    }
+    @ApiOperation("更新角色")
+    @RequestMapping(value = "/role/update", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult updateRole(@RequestParam("adminId") Long adminId,
+                                   @RequestParam("roleIds") List<Long> roleIds){
+        int count = adminService.updateRole(adminId, roleIds);
+        if (count >= 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
     }
 }

@@ -12,7 +12,14 @@ import java.util.List;
 public interface UmsRoleService {
     List<UmsMenu> getMenuList(Long adminId);
 
-    List<UmsRole> list();
+    List<UmsRole> listAll();
 
-
+    /**
+     * 根据条件分页查询
+     * @param keyword
+     * @param pageSize
+     * @param pageNum
+     * @return
+     */
+    List<UmsRole> list(String keyword, Integer pageSize, Integer pageNum);
 }

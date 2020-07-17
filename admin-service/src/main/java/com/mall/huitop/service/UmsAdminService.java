@@ -1,6 +1,7 @@
 package com.mall.huitop.service;
 
 import com.mall.huitop.dto.UserAdminDto;
+import com.mall.huitop.entity.UmsRole;
 import com.mall.huitop.entity.UserAdmin;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -69,4 +70,18 @@ public interface UmsAdminService {
      */
     int update(Long id, UserAdmin admin);
 
+    /**
+     * 得到该用户的所有角色
+     * @param adminId
+     * @return
+     */
+    List<UmsRole> getRoleList(Long adminId);
+
+    /**
+     * 更新用户的权限
+     * @param adminId
+     * @param roleIds
+     * @return
+     */
+    int updateRole(Long adminId, List<Long> roleIds);
 }

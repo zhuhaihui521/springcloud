@@ -2,10 +2,7 @@ package com.mall.huitop.mapper;
 
 import com.mall.huitop.entity.UmsAdminExample;
 import com.mall.huitop.entity.UserAdmin;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -39,4 +36,7 @@ public interface UserAdminMapper {
     UserAdmin selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(UserAdmin admin);
+
+    @Update("update ums_admin set status =#{status} where id =#{id}")
+    int updateStatusByPrimaryKey(@Param("id")Long id, @Param("status")Integer status);
 }
