@@ -84,4 +84,11 @@ public interface UmsAdminService {
      * @return
      */
     int updateRole(Long adminId, List<Long> roleIds);
+
+    /**
+     * 根据adminId删除用户表
+     * @param adminId
+     * @return
+     */
+    int delete(Long adminId);
 }

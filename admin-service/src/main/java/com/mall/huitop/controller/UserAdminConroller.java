@@ -180,4 +180,15 @@ public class UserAdminConroller {
         }
         return CommonResult.failed();
     }
+    @ApiOperation("删除用户")
+    @RequestMapping(value = "/delete/{adminId}", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult delete(@PathVariable Long adminId){
+        //在删除用户表的时候，也应该删除和用户表相关联的所有表以及缓存。
+        int count=adminService.delete(adminId);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
 }

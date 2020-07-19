@@ -41,21 +41,20 @@ import java.util.List;
 public class UmsAdminServiceImpl implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
 
-    @Autowired
+    @Autowired(required = false)
     private UserAdminMapper userAdminMapper;
 
-    @Autowired
+    @Autowired(required = false)
     private UserAdminRoleRelationMapper userAdminRoleRelationMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private UserAdminCacheService userAdminCacheService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
+    @Autowired(required = false)
     private UmsAdminLoginLogMapper loginLogMapper;
 
     @Override
@@ -244,6 +243,15 @@ public class UmsAdminServiceImpl implements UmsAdminService {
          userAdminCacheService.delResourceList(adminId);
          userAdminCacheService.delRoleList(adminId);
          return count;
+    }
+    @Override
+    @Transactional
+    public int delete(Long id) {
+        userAdminCacheService.delAdmin(id);
+        userAdminRoleRelationMapper.deleteByAdminId(id);
+        int count = userAdminMapper.deleteByPrimaryKey(id);
+        userAdminCacheService.delResourceList(id);
+        return count;
     }
 
 }

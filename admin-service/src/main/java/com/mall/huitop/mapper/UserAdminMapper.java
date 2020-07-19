@@ -39,4 +39,7 @@ public interface UserAdminMapper {
 
     @Update("update ums_admin set status =#{status} where id =#{id}")
     int updateStatusByPrimaryKey(@Param("id")Long id, @Param("status")Integer status);
+
+    @Delete("delete from ums_admin where id = #{id}")
+    int deleteByPrimaryKey(@Param("id")Long id);
 }
