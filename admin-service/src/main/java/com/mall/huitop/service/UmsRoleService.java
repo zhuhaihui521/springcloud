@@ -59,4 +59,12 @@ public interface UmsRoleService {
      * @return
      */
     List<UserResource> listResource(Long roleId);
+
+    /**
+     * 修改用户角色
+     * @param roleId
+     * @param role
+     * @return
+     */
+    int updateByRoleId(Long roleId, UmsRole role);
 }

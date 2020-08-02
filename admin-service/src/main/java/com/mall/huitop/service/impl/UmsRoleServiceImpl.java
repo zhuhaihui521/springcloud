@@ -109,4 +109,10 @@ public class UmsRoleServiceImpl implements UmsRoleService {
         return umsRoleMapper.getResourceListByRoleId(roleId);
 
     }
+
+    @Override
+    public int updateByRoleId(Long roleId, UmsRole role) {
+        role.setId(roleId);
+        return umsRoleMapper.updateByRoleId(role);
+    }
 }
