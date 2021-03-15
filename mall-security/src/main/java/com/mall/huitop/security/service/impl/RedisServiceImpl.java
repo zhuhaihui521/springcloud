@@ -2,6 +2,7 @@ package com.mall.huitop.security.service.impl;
 
 import com.mall.huitop.security.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 

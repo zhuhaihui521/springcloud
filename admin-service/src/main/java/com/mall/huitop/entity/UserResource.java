@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.openjdk.jol.info.ClassLayout;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -35,4 +36,8 @@ public class UserResource implements Serializable {
     private Long categoryId;
 
     private static final long serialVersionUID = 1L;
+
+    public static void main(String[] args) {
+        System.out.println(ClassLayout.parseInstance(new String()).toPrintable());
+    }
 }

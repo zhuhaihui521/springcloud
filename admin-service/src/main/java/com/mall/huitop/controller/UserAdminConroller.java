@@ -5,7 +5,6 @@ import com.mall.huitop.common.api.CommonResult;
 import com.mall.huitop.dto.UserAdminDto;
 import com.mall.huitop.entity.UmsRole;
 import com.mall.huitop.entity.UserAdmin;
-import com.mall.huitop.security.utils.JwtTokenUtil;
 import com.mall.huitop.service.UmsAdminService;
 import com.mall.huitop.service.UmsRoleService;
 import io.swagger.annotations.ApiOperation;
@@ -42,8 +41,7 @@ public class UserAdminConroller {
     private UmsAdminService adminService;
     @Autowired
     private UmsRoleService roleService;
-    @Autowired
-    private JwtTokenUtil tokenUtil;
+
 
     @ApiOperation(value = "用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
