@@ -9,11 +9,17 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>admin-service</module>
+       <module>admin-service</module>
         <module>mall-common</module>
         <module>mall-security</module>
         <module>id-service</module>
-
+        <module>goods-service</module>
+        <module>mall-security</module>
+        <module>mall-common</module>
+        <module>pay-service</module>
+        <module>user-service</module>
+        <module>order-service</module>
+        <module>mall-pojo</module>
     </modules>
     <!--统一管理jar包和版本-->
     <properties>
