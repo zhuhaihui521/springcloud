@@ -1,0 +1,44 @@
+server:
+  port: 9008
+spring:
+  application:
+    name: coupon-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://106.12.21.222:3306/trade?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: AIhaIhui>:521
+mybatis:
+  type-aliases-package: com.mall.huitop.mapper
+  mapper-locations: classpath:mapper/*Mapper.xml
+management:
+  endpoints:
+    exposure:
+      include: '*'
+mq:
+  order:
+    consumer:
+      group:
+        name: order_orderTopic_cancel_group
+    topic: orderTopic
+    tag:
+      cancel: order_cancel
+rocketmq:
+  name-server: 192.168.2.172:9876;192.168.2.176:9876;192.168.2.177:9876;192.168.2.178:9876
+  producer:
+    group: order
+    send-message-timeout: 300000
+
+
+

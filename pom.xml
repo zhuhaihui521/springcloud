@@ -13,6 +13,7 @@
         <module>mall-common</module>
         <module>mall-security</module>
         <module>id-service</module>
+
     </modules>
     <!--统一管理jar包和版本-->
     <properties>

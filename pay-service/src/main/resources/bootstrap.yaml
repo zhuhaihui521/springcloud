@@ -1,0 +1,57 @@
+server:
+  port: 9006
+spring:
+  application:
+    name: pay-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+  redis:
+    port: 8806
+    host: 106.12.21.222
+    jedis:
+      pool:
+        max-idle: 100
+  rabbitmq:
+    host: 106.12.21.222
+    port: 5672
+    username: zhuhaihui
+    password: 123456
+    virtual-host: /
+    template:
+      retry:
+        max-attempts: 3
+        multiplier: 1
+        initial-interval: 1000
+        enabled: true
+    listener:
+      simple:
+        prefetch: 200
+        auto-startup: true
+        default-requeue-rejected: true
+        max-concurrency: 1000
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://106.12.21.222:3306/trade?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: AIhaIhui>:521
+
+mybatis:
+  type-aliases-package: com.mall.huitop.mapper
+  mapper-locations: classpath:mapper/*Mapper.xml
+management:
+  endpoints:
+    exposure:
+      include: '*'
+
+
+
+

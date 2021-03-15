@@ -1,0 +1,29 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: order-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://106.12.21.222:3306/mall?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: AIhaIhui>:521
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      cluster-nodes: 192.168.15.234:9300
+      cluster-name: elasticsearch
+  template:
+    cache: false
+mybatis:
+  type-aliases-package: com.mall.huitop.dao
+  mapper-locations: classpath:mapper/*Dao.xml
+management:
+  endpoints:
+    exposure:
+      include: '*'
+
+
+
+

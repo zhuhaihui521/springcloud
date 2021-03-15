@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="admin-service" />
+        <module name="coupon-service" />
+        <module name="id-service" />
+        <module name="mall-common" />
+        <module name="mall-security" />
+        <module name="orderservice" />
+        <module name="search-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="goods-service" target="1.8" />
+      <module name="mall-pojo" target="1.8" />
+      <module name="order-service" target="1.8" />
+      <module name="own-rpc" target="1.8" />
+      <module name="pay-service" target="1.8" />
+      <module name="search-service" target="1.8" />
+      <module name="user-service" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

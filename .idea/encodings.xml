@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/admin-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coupon-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coupon-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coupon-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/goods-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/goods-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/goods-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/id-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mall-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mall-pojo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mall-pojo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mall-pojo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mall-security" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/order-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/order-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/order-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pay-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pay-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pay-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/search-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-service" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-service/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
